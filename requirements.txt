@@ -1,0 +1,25 @@
+# ── Day 18 dependencies (unchanged) ──────────────────────────────────────────
+pypdf>=4.0
+python-dotenv>=1.0
+underthesea>=6.8
+rank-bm25>=0.2.2
+qdrant-client>=1.9
+sentence-transformers>=3.0
+flashrank>=0.2
+ragas>=0.1.10,<0.2
+langchain-community>=0.2,<0.3
+langchain-openai>=0.1,<0.2
+datasets>=2.19
+openai>=1.30
+
+# ── Day 24 new: LLM Judge ────────────────────────────────────────────────────
+scipy>=1.11                      # Cohen's κ calculation
+
+# ── Day 24 new: Guardrails ───────────────────────────────────────────────────
+presidio-analyzer>=2.2           # PII detection engine
+presidio-anonymizer>=2.2         # PII anonymization
+spacy>=3.7                       # Required by presidio-analyzer
+nemoguardrails>=0.9              # NeMo Guardrails (topic + content rails via LLM API)
+
+# After pip install, run:
+#   python -m spacy download en_core_web_lg

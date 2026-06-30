@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+.python-version
+*.egg-info/
+.venv/
+venv/
+answers_50q.json
+reports/*.json
+!reports/.gitkeep
