@@ -1,5 +1,6 @@
 .env
 __pycache__/
+.pytest_cache/
 *.pyc
 .python-version
 *.egg-info/
@@ -7,4 +8,8 @@ __pycache__/
 venv/
 answers_50q.json
 reports/*.json
+!answers_50q.json
+!reports/ragas_50q.json
+!reports/judge_results.json
+!reports/guard_results.json
 !reports/.gitkeep

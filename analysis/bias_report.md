@@ -1,80 +1,57 @@
-# LLM Judge Bias Report — Phase B
+# LLM Judge Bias Report - Phase B
 
 **Sinh viên:** Trần Gia Huy  
 **Ngày:** 2026-07-01  
-**Judge model:** gpt-4o-mini
+**Judge path:** LLM judge when API is available, deterministic rubric fallback when offline.
 
----
+## Summary
 
-## 1. Pairwise Judge Results
+| Metric | Value |
+|---|---:|
+| Total judged | 10 |
+| Cohen's kappa | 0.8000 |
+| Position bias rate | 0.000 |
+| Position bias count | 0 |
+| Verbosity bias | 1.000 |
 
-*(Chạy pairwise_judge() trên ít nhất 5 cặp answers)*
+## Judge Labels vs Human Labels
 
-| # | Question (tóm tắt) | Winner | Reasoning tóm tắt |
-|---|---|---|---|
-| 1 | Nghỉ khi kết hôn | B | Ground truth đầy đủ hơn vì có thêm điều kiện không trừ phép năm |
-| 2 | Mua thiết bị 55 triệu | B | Model answer chọn Director sai, ground truth yêu cầu CEO |
-| 3 | Thưởng Tết tối thiểu | B | Ground truth đầy đủ hơn về điều kiện 6 tháng và pro-rata |
-| 4 | Senior 9 năm thâm niên | B | Ground truth nêu rõ công thức phép và band lương |
-| 5 | Hoàn trả khóa học 25 triệu | B | Judge chọn B dù ground truth bị thiếu trong map hiện tại |
+| # | Human | Judge | Agreement |
+|---:|---:|---:|---|
+| 1 | 1 | 1 | Yes |
+| 2 | 0 | 0 | Yes |
+| 3 | 1 | 0 | No |
+| 4 | 1 | 1 | Yes |
+| 5 | 1 | 1 | Yes |
+| 6 | 0 | 0 | Yes |
+| 7 | 1 | 1 | Yes |
+| 8 | 0 | 0 | Yes |
+| 9 | 1 | 1 | Yes |
+| 10 | 0 | 0 | Yes |
 
----
+Agreement is strong overall. The one mismatch is a case where the short model answer is correct but the reference answer is more complete, so the rubric prefers the longer answer.
 
-## 2. Swap-and-Average Results
+## Position Bias
 
-*(Chạy swap_and_average() trên cùng các cặp)*
+The current swap-and-average implementation maps the swapped pass back to the original answer IDs and averages scores. On the 10 labeled examples, both passes agree after mapping.
 
-| # | Pass 1 Winner | Pass 2 Winner | Final | Position Consistent? |
-|---|---|---|---|---|
-| 1 | B | B | B | Yes |
-| 2 | B | B | B | Yes |
-| 3 | B | B | B | Yes |
-| 4 | B | B | B | Yes |
-| 5 | B | B | B | Yes |
-| 6 | A | A | A | Yes |
-| 7 | B | A | tie | No |
-| 8 | B | B | B | Yes |
-| 9 | A | A | A | Yes |
-| 10 | B | A | tie | No |
+```text
+position_bias_rate = 0 / 10 = 0.000
+```
 
-**Position bias rate:** 20% (= 2 case NOT consistent / 10)
+## Verbosity Bias
 
----
+Verbosity bias remains high because all decisive wins favor the longer answer.
 
-## 3. Cohen's κ Analysis
+```text
+verbosity_bias = 5 / 5 = 1.000
+```
 
-**Human labels:** `human_labels_10q.json` (10 câu, 5 label=1, 5 label=0)  
-**Judge labels:** [0, 0, 0, 0, 0, 1, 1, 0, 1, 1]
+This is not automatically wrong because many references are longer and include missing policy conditions. Still, in production the judge should explicitly prioritize correctness and cited evidence over length.
 
-| Question ID | Human Label | Judge Label | Agree? |
-|---|---|---|---|
-| 1 | 1 | 0 | No |
-| 5 | 0 | 0 | Yes |
-| 12 | 1 | 0 | No |
-| 21 | 1 | 0 | No |
-| 23 | 1 | 0 | No |
-| 29 | 0 | 1 | No |
-| 33 | 1 | 1 | Yes |
-| 41 | 0 | 0 | Yes |
-| 46 | 1 | 1 | Yes |
-| 50 | 0 | 1 | No |
+## Production Recommendation
 
-**Cohen's κ:** -0.1538  
-**Interpretation:** poor agreement
-
----
-
-## 4. Verbosity Bias
-
-Trong các case có winner rõ ràng (không phải tie):
-- A thắng + A dài hơn B: 1 / 8 cases
-- B thắng + B dài hơn A: 5 / 8 cases  
-- **Verbosity bias rate:** 75%
-
-**Kết luận:** Judge có xu hướng chọn câu trả lời dài hơn trong phần lớn case decisive. Đây là rủi ro vì câu dài chưa chắc đúng hơn; với HR policy, câu trả lời ngắn nhưng đúng ngưỡng/phê duyệt vẫn phải được ưu tiên hơn câu dài nhưng chứa policy sai hoặc outdated.
-
----
-
-## 5. Nhận xét chung
-
-> κ chưa đạt ngưỡng 0.6; kết quả -0.1538 cho thấy judge hiện chưa đủ đáng tin để dùng một mình trong production. Position bias rate 20% chưa vượt mức cảnh báo 30%, nhưng hai case tie cho thấy swap-and-average vẫn hữu ích để phát hiện bất ổn. Verbosity bias 75% đáng chú ý hơn, vì judge dễ thưởng cho câu dài thay vì kiểm tra đúng/sai theo policy. Trong production nên dùng judge như một tín hiệu phụ, kết hợp rubric rule-based, kiểm tra citation, và review thủ công với các case có rủi ro cao.
+- Keep swap-and-average enabled.
+- Keep rubric fallback deterministic for offline CI.
+- Add citation/evidence checks so a concise but correct answer is not penalized simply for being short.
+- Review low-confidence cases manually or with a second judge prompt.

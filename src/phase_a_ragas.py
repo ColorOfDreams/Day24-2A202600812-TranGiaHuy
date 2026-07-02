@@ -90,12 +90,7 @@ def save_phase_a_report(results: list[RagasResult], clusters: dict,
         "total_questions": len(results),
         "per_distribution": per_dist,
         "failure_clusters": clusters,
-        "bottom_10": [
-            {"rank": i + 1, "question_id": r.question_id, "distribution": r.distribution,
-             "question": r.question, "avg_score": round(r.avg_score, 4),
-             "worst_metric": r.worst_metric}
-            for i, r in enumerate(sorted(results, key=lambda x: x.avg_score)[:10])
-        ],
+        "bottom_10": bottom_10(results),
     }
     with open(path, "w", encoding="utf-8") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)
@@ -106,7 +101,10 @@ def group_by_distribution(test_set: list[dict]) -> dict[str, list[dict]]:
     """Task 1: Nhóm 50 câu hỏi theo 3 distributions."""
     groups = {"factual": [], "multi_hop": [], "adversarial": []}
     for item in test_set:
-        groups[item["distribution"]].append(item)
+        distribution = item.get("distribution")
+        if distribution not in groups:
+            raise ValueError(f"Unknown distribution: {distribution!r}")
+        groups[distribution].append(item)
     return groups
 
 
@@ -125,6 +123,10 @@ def run_ragas_50q(answers: list[dict]) -> list[RagasResult]:
 
     raw = evaluate_ragas(questions, ans_texts, contexts, ground_truths)
     per_q = raw.get("per_question", [])
+    if len(per_q) != len(answers):
+        raise ValueError(
+            f"evaluate_ragas returned {len(per_q)} per-question results for {len(answers)} answers"
+        )
 
     results = []
     for a, pq in zip(answers, per_q):
@@ -186,6 +188,10 @@ def cluster_analysis(results: list[RagasResult]) -> dict:
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+
     test_set = load_test_set_50q()
     print(f"Loaded {len(test_set)} questions")
 

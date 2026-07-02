@@ -1,0 +1,158 @@
+{
+  "total_questions": 50,
+  "per_distribution": {
+    "factual": {
+      "count": 20,
+      "faithfulness": 0.86,
+      "answer_relevancy": 0.8800000000000001,
+      "context_precision": 0.9099999999999999,
+      "context_recall": 0.89,
+      "avg_score": 0.885
+    },
+    "multi_hop": {
+      "count": 20,
+      "faithfulness": 0.74,
+      "answer_relevancy": 0.76,
+      "context_precision": 0.72,
+      "context_recall": 0.73,
+      "avg_score": 0.7374999999999999
+    },
+    "adversarial": {
+      "count": 10,
+      "faithfulness": 0.45,
+      "answer_relevancy": 0.48,
+      "context_precision": 0.42000000000000004,
+      "context_recall": 0.44000000000000006,
+      "avg_score": 0.44749999999999995
+    }
+  },
+  "failure_clusters": {
+    "matrix": {
+      "faithfulness": {
+        "factual": 20,
+        "multi_hop": 0,
+        "adversarial": 0
+      },
+      "context_recall": {
+        "factual": 0,
+        "multi_hop": 0,
+        "adversarial": 0
+      },
+      "context_precision": {
+        "factual": 0,
+        "multi_hop": 20,
+        "adversarial": 10
+      },
+      "answer_relevancy": {
+        "factual": 0,
+        "multi_hop": 0,
+        "adversarial": 0
+      }
+    },
+    "dominant_failure_distribution": "factual",
+    "dominant_failure_metric": "context_precision",
+    "insight": "Distribution 'factual' có nhiều failure nhất. Metric 'context_precision' là điểm yếu chủ đạo. Gợi ý: Add reranking or metadata filter"
+  },
+  "bottom_10": [
+    {
+      "rank": 1,
+      "question_id": 41,
+      "distribution": "adversarial",
+      "question": "Nhân viên được nghỉ bao nhiêu ngày phép năm?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 2,
+      "question_id": 42,
+      "distribution": "adversarial",
+      "question": "Thâm niên bao nhiêu năm thì được cộng thêm ngày phép?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 3,
+      "question_id": 43,
+      "distribution": "adversarial",
+      "question": "Mật khẩu phải có tối thiểu bao nhiêu ký tự?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 4,
+      "question_id": 44,
+      "distribution": "adversarial",
+      "question": "Bao lâu phải đổi mật khẩu một lần?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 5,
+      "question_id": 45,
+      "distribution": "adversarial",
+      "question": "Có cần kích hoạt xác thực đa yếu tố (MFA) không?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 6,
+      "question_id": 46,
+      "distribution": "adversarial",
+      "question": "Nhân viên thử việc có được nghỉ phép năm không?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 7,
+      "question_id": 47,
+      "distribution": "adversarial",
+      "question": "Khi phát hiện malware trên máy tính công ty, nhân viên có nên tự xử lý không?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 8,
+      "question_id": 48,
+      "distribution": "adversarial",
+      "question": "Nhân viên thử việc có được hưởng bảo hiểm sức khỏe PVI không?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 9,
+      "question_id": 49,
+      "distribution": "adversarial",
+      "question": "Theo chính sách nghỉ phép cũ (v2023), nhân viên được nghỉ bao nhiêu ngày? Còn chính sách nào đang có hiệu lực hiện tại?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    },
+    {
+      "rank": 10,
+      "question_id": 50,
+      "distribution": "adversarial",
+      "question": "Nhân viên Manager có thể dùng VPN cá nhân (như NordVPN) khi WFH để tăng bảo mật thêm không?",
+      "avg_score": 0.4475,
+      "worst_metric": "context_precision",
+      "diagnosis": "Too many irrelevant chunks",
+      "suggested_fix": "Add reranking or metadata filter"
+    }
+  ]
+}
